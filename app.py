@@ -1,7 +1,7 @@
 # Bayyenah - Legal Contract Analyzer System (Simple and Free Version)
 # Tools: Python, Streamlit, Tesseract OCR, HuggingFace Transformers
 # Hosting: Google Colab for model + Streamlit Cloud for interface
-
+import torch
 import streamlit as st
 import pytesseract
 from PIL import Image
