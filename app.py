@@ -1,9 +1,12 @@
+# Bayyenah - Legal Contract Analyzer System (Simple and Free Version)
+# Tools: Python, Streamlit, Tesseract OCR, HuggingFace Transformers
+# Hosting: Google Colab for model + Streamlit Cloud for interface
+
 import streamlit as st
 import pytesseract
 from PIL import Image
 from pdf2image import convert_from_bytes
 from transformers import pipeline
-import io
 
 # Load AI Model (Zero-shot classifier)
 classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
@@ -49,15 +52,7 @@ if uploaded_file:
         clauses = [c.strip() for c in full_text.split(".\n") if len(c.strip()) > 20]  # simple clause split
         for clause in clauses:
             label, color = classify_clause(clause)
-            st.markdown(f"<div style='background-color:{color};padding:10px;border-radius:10px;margin:5px 0;'>{clause}  
-<b>Classification:</b> {label}</div>", unsafe_allow_html=True)
-
-# STEP 4: Run locally using: streamlit run app.py
-# OR deploy on https://share.streamlit.io/ for free hosting
-
-# Notes:
-# - All processing is in-memory (no storage)
-# - Free AI model (bart-large-mnli) from HuggingFace
-# - Works in Colab (backend) + Streamlit Cloud (frontend) without database
-
-# Optional: Add clause explanations and Saudi law references manually in future versions
+            st.markdown(
+                f"<div style='background-color:{color};padding:10px;border-radius:10px;margin:5px 0;'>{clause}<br><b>Classification:</b> {label}</div>",
+                unsafe_allow_html=True
+            )
