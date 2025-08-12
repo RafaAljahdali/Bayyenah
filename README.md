@@ -7,7 +7,7 @@ Bayyenah is a web platform for newcomers to review job contracts before signing.
 - AI-powered clause classification and explanations
 - Color-coded risk indicators: Green (fair), Yellow (ambiguous), Red (unfair)
 
-1. Requirements
+## Requirements
 - Python 3.8+
 - Flask
 - Pillow
@@ -17,13 +17,13 @@ Bayyenah is a web platform for newcomers to review job contracts before signing.
 - Tesseract OCR (must be installed separately)
 - Node.js (for playwright)
 
-2. Install dependencies:
+## Install dependencies:
 pip install -r requirements.txt
 
-3. Run the app:
-- Open the Command Prompt (cmd) and run this command, replacing the path if your Chrome is installed elsewhere:
+## Run the app:
+1. Open the Command Prompt (cmd) and run this command, replacing the path if your Chrome is installed elsewhere:
 "C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222 --user-data-dir="C:\chrome-dev-session"
-- In the opened Chrome window, log in to your ChatGPT account and send any message in the chat to activate the session.
+2- In the opened Chrome window, log in to your ChatGPT account and send any message in the chat to activate the session.
 - Then, in a separate terminal (I use Python terminal), run the backend server with:
 python backend.py
 - After the server starts, you will see a local website link. Open it in your browser to start uploading and analyzing your contracts!
