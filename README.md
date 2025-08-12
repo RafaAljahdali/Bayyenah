@@ -15,7 +15,8 @@ Bayyenah_Project/
 ├── templates/
 │   └── index.html
 ├── static/
-│   └── logo.png
+│   └── images/
+│       └── logo.png
 └── uploads/
 ```
 ## Requirements
