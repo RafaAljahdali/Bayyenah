@@ -3,7 +3,7 @@ Bayyenah is a web platform for newcomers to review job contracts before signing.
 
 ## Features
 - Upload contracts in PDF or image format
-- OCR extracts text for analysis
+- OCR extracts text for analysis (English and Arabic)
 - AI-powered clause classification and explanations
 - Color-coded risk indicators: Green (fair), Yellow (ambiguous), Red (unfair)
 
