@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>بيِّنه – نظام قراءة العقود</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&family=Cairo:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      background-color: #FAF9F6;
+      font-family: 'Tajawal', 'Cairo', sans-serif;
+      direction: rtl;
+      color: #4B4A2C;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 64px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    @media(min-width: 1024px) {
+      .container {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .card {
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.05);
+      transition: background-color 0.3s ease;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 14px;
+      margin: 8px 0;
+    }
+    .clause-title {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+    .explanation {
+      font-size: 14px;
+      opacity: 0.9;
+      line-height: 1.6;
+      margin-top: 8px;
+      white-space: pre-wrap;
+    }
+
+    /* ألوان الكروت */
+    .card.green {
+      background-color: #5C835C;
+      color: white;
+    }
+    .card.green .badge {
+      background-color: rgba(255,255,255,0.2);
+      color: white;
+    }
+    .card.yellow {
+      background-color: #C49B42;
+      color: #4B4A2C;
+    }
+    .card.yellow .badge {
+      background-color: rgba(75,74,44,0.2);
+      color: #4B4A2C;
+    }
+    .card.red {
+      background-color: #A8442B;
+      color: white;
+    }
+    .card.red .badge {
+      background-color: rgba(255,255,255,0.2);
+      color: white;
+    }
+    .card.neutral {
+      background-color: #ddd;
+      color: #4B4A2C;
+    }
+    .card.neutral .badge {
+      background-color: rgba(75,74,44,0.1);
+      color: #4B4A2C;
+    }
+
+    /* قسم الرفع */
+    .upload-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 12px 24px rgba(140, 75, 44, 0.2), 0 6px 12px rgba(140, 75, 44, 0.15);
+      max-width: 600px;
+      width: 90%;
+      margin: 40px auto;
+      padding: 40px;
+      text-align: center;
+    }
+    .upload-card img {
+      max-height: 180px;
+      object-fit: contain;
+      margin-bottom: 30px;
+    }
+    .upload-card button {
+      background-color: #8C4B2C;
+      color: white;
+      padding: 16px 48px;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: box-shadow 0.3s;
+    }
+    .upload-card button:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .note {
+      color: #4B4A2C;
+      font-size: 16px;
+      margin-bottom: 30px;
+    }
+    .alert {
+      background-color: #FFF8E7;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 30px auto;        
+      max-width: 600px;         
+      color: #8C4B2C;
+      text-align: center;
+    }
+    #status {
+      color: #8C4B2C;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- كارد رفع الملف -->
+  <div class="upload-card">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="شعار بيِّنه">
+    <form id="uploadForm" enctype="multipart/form-data">
+      <input type="file" name="contract" required>
+      <br><br>
+      <button type="submit">رفع وتحليل العقد</button>
+    </form>
+    <p class="note">يدعم النظام ملفات PDF أو صور العقود الرسمية</p>
+    <div class="alert">
+      ⚠️ هذا النظام تجريبي. يُنصح بمراجعة مختص قانوني قبل اتخاذ أي قرار رسمي
+    </div>
+    <p>هذا النظام يساعدك على فهم عقد العمل قبل توقيعه.<br>
+      بمجرد رفع ملف العقد، يقوم النظام بتحليل البنود وتلوينها حسب الوضوح والعدالة.<br>
+      الهدف هو مساعدتك على اتخاذ قرار واعٍ، لكنه لا يغني عن استشارة مختص قانوني.
+    </p>
+    <p id="status"></p>
+  </div>
+
+  <!-- النتائج -->
+  <div id="result" class="container"></div>
+
+  <script>
+    function getClassificationText(cls) {
+      switch(cls) {
+        case 'red': return 'غير عادلة';
+        case 'yellow': return 'تحتاج تفاوض';
+        case 'green': return 'عادل';
+        default: return 'غير مصنف';
+      }
+    }
+
+    function classifyText(text) {
+      const txt = text.toLowerCase();
+
+      const unfairWords = ['غير عادله', 'غير عادل', 'غير عادلة'];
+      const negotiableWords = [
+        'تحتاج تفويض',
+        'تحتاج تفاوض',
+        'تحتاج الى تفاوض',
+        'تحتاج الى تفاويض',
+        'بحاجة الى تفويض',
+        'تفاوض',
+        'قابل للتفاوض'
+      ];
+      const fairWords = ['عادل', 'عادلة', 'عادله'];
+
+      for (const w of unfairWords) {
+        if (txt.includes(w)) return 'red';
+      }
+      for (const w of negotiableWords) {
+        if (txt.includes(w)) return 'yellow';
+      }
+      for (const w of fairWords) {
+        if (txt.includes(w)) return 'green';
+      }
+      return 'neutral';
+    }
+
+    function cleanText(text) {
+      return text
+        .replace(/[\u200B-\u200D\uFEFF]/g, '')
+        .replace(/[^\S\r\n]+/g, ' ')
+        .trim();
+    }
+
+    document.getElementById('uploadForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const statusEl = document.getElementById('status');
+      const resultDiv = document.getElementById('result');
+
+      statusEl.innerText = 'جاري التحليل...';
+
+      fetch('/analyze', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.text();
+      })
+      .then(rawText => {
+        statusEl.innerText = 'تم تحليل العقد';
+        resultDiv.innerHTML = '';
+
+        // محاولة تحويل للنص من JSON لو ممكن
+        let text = rawText;
+        try {
+          const data = JSON.parse(rawText);
+          text = data.response || rawText;
+        } catch {
+          // النص عادي
+        }
+
+        text = text.trim();
+
+        const clauseRegex = /البند\s+([^\s:]+)[:\s]*([\s\S]*?)(?=البند\s+[^\s:]+[:\s]*|$)/g;
+
+        let match;
+        let found = false;
+
+        while ((match = clauseRegex.exec(text)) !== null) {
+          found = true;
+          const clauseNumber = match[1].trim();
+          const clauseContent = match[2].trim();
+
+          let lines = clauseContent.split('\n').map(l => l.trim()).filter(l => l !== '');
+
+          let clauseName = '';
+          let classificationText = '';
+          let explanationText = '';
+
+          for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            if (/^تصنيف:?\s*/i.test(line)) {
+              classificationText = line.replace(/^تصنيف:?\s*/i, '').trim();
+            } else if (/^توضيح:?\s*/i.test(line)) {
+              explanationText = line.replace(/^توضيح:?\s*/i, '').trim();
+
+              let j = i + 1;
+              while (j < lines.length && !/^تصنيف:?\s*/i.test(lines[j]) && !/^توضيح:?\s*/i.test(lines[j])) {
+                explanationText += '\n' + lines[j];
+                j++;
+              }
+              i = j - 1;
+            } else if (clauseName === '') {
+              clauseName = line;
+            }
+          }
+
+          const classification = classifyText(classificationText);
+
+          let icon = classification === 'red' ? '❌' :
+                     classification === 'yellow' ? '⚠️' :
+                     classification === 'green' ? '✅' : 'ℹ️';
+
+          resultDiv.innerHTML += `
+            <div class="card ${classification}">
+              <div class="clause-title">البند ${clauseNumber}: ${cleanText(clauseName)}</div>
+              <div class="badge">${icon} ${classificationText || getClassificationText(classification)}</div>
+              <div class="explanation">${explanationText.replace(/\n/g, '<br>')}</div>
+            </div>
+          `;
+        }
+
+        if (!found) {
+          resultDiv.innerHTML = '<p>لم يتم العثور على بنود لتحليلها.</p>';
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        statusEl.innerText = 'حدث خطأ أثناء التحليل';
+      });
+    });
+  </script>
+</body>
+</html>
