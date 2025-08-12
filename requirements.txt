@@ -1,5 +1,0 @@
-flask
-pillow
-pytesseract
-pdf2image
-playwright
