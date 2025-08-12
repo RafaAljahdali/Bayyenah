@@ -23,10 +23,10 @@ pip install -r requirements.txt
 ## Run the app:
 1. Open the Command Prompt (cmd) and run this command, replacing the path if your Chrome is installed elsewhere:
 "C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222 --user-data-dir="C:\chrome-dev-session"
-2- In the opened Chrome window, log in to your ChatGPT account and send any message in the chat to activate the session.
-- Then, in a separate terminal (I use Python terminal), run the backend server with:
+2. In the opened Chrome window, log in to your ChatGPT account and send any message in the chat to activate the session.
+3. Then, in a separate terminal (I use Python terminal), run the backend server with:
 python backend.py
-- After the server starts, you will see a local website link. Open it in your browser to start uploading and analyzing your contracts!
+4. After the server starts, you will see a local website link. Open it in your browser to start uploading and analyzing your contracts!
 
 
 ## License
