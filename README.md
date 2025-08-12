@@ -7,6 +7,17 @@ Bayyenah is a web-based platform that enables individuals new to the job market 
 - AI-powered clause classification and explanations
 - Color-coded risk indicators: Green (fair), Yellow (ambiguous), Red (unfair)
 
+## Project Structure
+```plaintext
+Bayyenah_Project/
+├── backend.py
+├── playwright_script.py
+├── templates/
+│   └── index.html
+├── static/
+│   └── logo.png
+└── uploads/
+```
 ## Requirements
 - Python 3.8+
 - Flask
