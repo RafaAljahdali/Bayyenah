@@ -1,5 +1,5 @@
 # Bayyenah
-Bayyenah is a web platform for newcomers to review job contracts before signing. Users upload PDFs or images; OCR extracts the text. AI analysis (powered by ChatGPT) checks each clause against labor laws, classifying them by color: green for fair, Yellow for ambiguous, and Red for unfair. Clear explanations ensure transparency and protect rights.
+Bayyenah is a web-based platform that enables individuals new to the job market to review and understand their employment contracts before signing. Users can upload contracts in PDF or image format, which are processed using OCR to extract text. An AI-powered legal analysis (powered by ChatGPT) then examines each clause, checks compliance with national labor laws, and classifies them using a color-coded system: Green for fair and clear, Yellow for ambiguous and may require clarification, and Red for potentially unfair. Plain-language explanations are provided for every clause to promote transparency, protect employee rights, and prevent exploitation.
 
 ## Features
 - Upload contracts in PDF or image format
